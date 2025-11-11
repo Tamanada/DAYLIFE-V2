@@ -2,108 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DAYLIFE – Every Day Counts</title>
+
+    <!-- Icône de l'app -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Couleur principale -->
+    <meta name="theme-color" content="#7c3aed" />
   </head>
+
   <body>
+    <!-- C’est ici que l’app React s’affiche -->
     <div id="root"></div>
+
+    <!-- Script principal généré par Vite -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
-<head>
-  <meta charset="UTF-8" />
-  <title>DAYLIFE – Welcome</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="assets/style.css" />
-  <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-<body>
-  <main class="welcome-screen">
-    <div class="welcome-inner">
-      <div class="logo-circle">🌕</div>
-      <h1>DAYLIFE</h1>
-      <p class="tagline" data-i18n="welcome.tagline">
-        Every day counts. What will you do with yours?
-      </p>
-
-      <button id="startBtn" class="btn-primary" data-i18n="welcome.start">
-        Start my journey
-      </button>
-    </div>
-  </main>
-
-  <script src="assets/lang.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // Vérifie si un profil existe déjà
-      const existingProfile = localStorage.getItem("daylifeProfile");
-      const hasSetup = localStorage.getItem("daylifeHasSetup");
-
-      if (existingProfile && hasSetup) {
-        // 🔁 Redirige directement vers home
-        window.location.href = "home.html";
-        return;
-      }
-
-      // Sinon, attend le clic utilisateur
-      const btn = document.getElementById("startBtn");
-      btn.addEventListener("click", () => {
-        window.location.href = "welcome.html";
-      });
-    });
-  </script>
-
-  <style>
-    body {
-      background: linear-gradient(135deg, #eef2ff, #fdf2f8);
-      font-family: system-ui, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .welcome-inner {
-      text-align: center;
-    }
-
-    .logo-circle {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #7c3aed, #2563eb);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 36px;
-      color: white;
-      margin: 0 auto 20px;
-      box-shadow: 0 0 40px rgba(124, 58, 237, 0.5);
-    }
-
-    .tagline {
-      font-size: 14px;
-      color: #475569;
-      margin-bottom: 30px;
-    }
-
-    .btn-primary {
-      padding: 12px 28px;
-      border: none;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #6366f1, #a855f7);
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
-      transition: transform 0.15s ease, opacity 0.15s ease;
-    }
-
-    .btn-primary:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
-  </style>
-</body>
 </html>
