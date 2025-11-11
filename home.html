@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAYLIFE – Every Day Counts</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+  <div class="app-shell">
+    <!-- HEADER -->
+    <header id="appHeader"></header>
+
+    <!-- PAGE CONTENT -->
+    <main class="page">
+      <div class="page-inner home-page">
+
+        <section class="section counter-section">
+          <h1 data-i18n="home.title">🌕 How many days did you arrive on Earth?</h1>
+
+          <div class="life-stats-card card">
+            <div class="life-stats-header">
+              <div class="life-stat-block">
+                <span class="label" data-i18n="home.lived">Days lived</span>
+                <span id="daysLived" class="value">0</span>
+              </div>
+              <div class="life-stat-block">
+                <span class="label" data-i18n="home.remaining">Days remaining</span>
+                <span id="daysLeft" class="value">0</span>
+              </div>
+            </div>
+
+            <!-- Barre de progression + halo -->
+            <div class="progress-wrapper">
+              <div class="progress-bar">
+                <div id="lifeProgress" class="progress-fill"></div>
+                <div class="progress-halo"></div>
+              </div>
+
+              <!-- Marqueurs de rêves -->
+              <div class="dream-markers" id="dreamMarkers"></div>
+            </div>
+
+            <!-- Date de fin estimée -->
+            <p class="life-caption" id="lifeCaption" data-i18n="home.estimatedEnd">
+              Estimated end of your 30,000 days:
+            </p>
+          </div>
+        </section>
+
+        <!-- ÉTOILES + INSPIRATION -->
+        <section class="section inspiration-section">
+          <div class="stars-count">
+            <i data-lucide="star" class="stat-icon"></i>
+            <span id="starCount">⭐ 0</span>
+          </div>
+
+          <blockquote class="quote-box">
+            <p id="quoteText">Loading inspiration...</p>
+            <button id="newQuoteBtn" class="btn-refresh">
+              <i data-lucide="refresh-ccw"></i>
+              <span data-i18n="home.newInspiration">New inspiration</span>
+            </button>
+          </blockquote>
+        </section>
+      </div>
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <footer id="bottomNav"></footer>
+  </div>
+
+  <!-- Scripts globaux -->
+  <script src="assets/lang.js"></script>
+  <script src="assets/nav.js"></script>
+  <script src="assets/inspirations.js"></script>
+
+  <script>
+    createNavBar("home");
+    if (window.lucide) lucide.createIcons();
+
+    // Récupère le profil utilisateur
+    const profile = JSON.parse(localStorage.getItem("daylifeProfile") || "{}");
+    const dob = profile.dob ? new Date(profile.dob) : new Date(1990, 0, 1);
+    const birthMs = dob.getTime();
+    const todayMs = Date.now();
+    const daysLived = Math.max(0, Math.floor((todayMs - birthMs) / (1000 * 60 * 60 * 24)));
+
+    // Méthode de calcul (par défaut : 30 000 jours)
+    const totalDays = 30000;
+    const daysLeft = Math.max(0, totalDays - daysLived);
+    const lifeEndDate = new Date(birthMs + totalDays * 24 * 60 * 60 * 1000);
+
+    const daysLivedEl = document.getElementById("daysLived");
+    const daysLeftEl = document.getElementById("daysLeft");
+    const progressEl = document.getElementById("lifeProgress");
+    const captionEl = document.getElementById("lifeCaption");
+
+    // Animation du compteur
+    function animateCounter(el, target) {
+      const duration = 1200;
+      const start = performance.now();
+      function frame(now) {
+        const t = Math.min(1, (now - start) / duration);
+        el.textContent = Math.floor(t * target).toLocaleString();
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    // Animation barre
+    function animateProgress(el, percent) {
+      const duration = 1200;
+      const start = performance.now();
+      function frame(now) {
+        const t = Math.min(1, (now - start) / duration);
+        el.style.width = t * percent + "%";
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    const percent = (daysLived / totalDays) * 100;
+    animateCounter(daysLivedEl, daysLived);
+    daysLeftEl.textContent = daysLeft.toLocaleString();
+    animateProgress(progressEl, percent);
+
+    // Date de fin
+    const endDateStr = lifeEndDate.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    captionEl.textContent = DaylifeI18n.t("home.estimatedEnd") + " " + endDateStr;
+
+    // 🌈 Halo animé
+    const halo = document.querySelector(".progress-halo");
+    if (halo) halo.style.animation = "halo-slide 5s ease-in-out infinite";
+
+    // ⭐ Gestion étoiles
+    let stars = parseInt(localStorage.getItem("daylifeStars") || "0", 10);
+    const starEl = document.getElementById("starCount");
+    starEl.textContent = "⭐ " + stars;
+
+    // 🌕 Citation inspirante
+    function updateQuote(random = false) {
+      const lang = DaylifeI18n.getLang() || "en";
+      const quote = random
+        ? DaylifeInspirations.getRandom(lang)
+        : DaylifeInspirations.getForToday(lang);
+      document.getElementById("quoteText").textContent = quote;
+    }
+
+    document.getElementById("newQuoteBtn").addEventListener("click", () => {
+      updateQuote(true);
+      stars++;
+      localStorage.setItem("daylifeStars", stars);
+      starEl.textContent = "⭐ " + stars;
+    });
+
+    updateQuote(false);
+    DaylifeI18n.applyTranslations();
+  </script>
+
+  <!-- 🎨 Animation Halo -->
+  <style>
+    .progress-wrapper {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .progress-bar {
+      position: relative;
+      height: 14px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      position: relative;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.7);
+      transition: width 1s ease-out;
+    }
+
+    .progress-halo {
+      position: absolute;
+      top: -12px;
+      bottom: -12px;
+      left: -40%;
+      right: -40%;
+      background: radial-gradient(circle at 0% 50%, rgba(244, 114, 182, 0.18), transparent 55%);
+      pointer-events: none;
+    }
+
+    @keyframes halo-slide {
+      0% { transform: translateX(-30%); opacity: 0; }
+      20% { opacity: 1; }
+      50% { transform: translateX(30%); opacity: 1; }
+      80% { opacity: 0.4; }
+      100% { transform: translateX(60%); opacity: 0; }
+    }
+
+    .dream-markers {
+      position: relative;
+      height: 18px;
+      margin-top: 6px;
+    }
+
+    .dream-marker {
+      position: absolute;
+      top: 2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      transform: translateX(-50%);
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(15, 23, 42, 0.35);
+    }
+
+    .dream-marker-created { background: #f97316; }
+    .dream-marker-target { background: #22c55e; }
+
+    .life-caption {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #6b7280;
+      text-align: center;
+    }
+  </style>
+</body>
+</html>
