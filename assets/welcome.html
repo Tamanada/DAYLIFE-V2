@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DAYLIFE – Welcome</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <!-- Icônes Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Header simplifié : logo + sélecteur de langue -->
+    <header class="app-header">
+      <div class="app-header-inner">
+        <div class="brand">
+          <div class="brand-orbit">🌕</div>
+          <div>
+            <div class="brand-text-main">DAYLIFE</div>
+            <div class="brand-text-sub">Every Day Counts</div>
+          </div>
+        </div>
+        <div>
+          <select id="langSelect" class="lang-select"></select>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenu -->
+    <main class="page welcome-shell">
+      <div class="welcome-card">
+        <div class="welcome-logo">✦</div>
+        <h1 class="welcome-title" data-i18n="welcome.title">DAYLIFE</h1>
+        <p class="welcome-tagline" data-i18n="welcome.tagline">
+          Every day counts. What will you do with yours?
+        </p>
+
+        <form id="welcomeForm">
+          <div class="form-field">
+            <label for="dob" data-i18n="welcome.dobLabel">Date of birth *</label>
+            <input type="date" id="dob" />
+          </div>
+
+          <div class="form-field">
+            <label for="sex" data-i18n="welcome.sexLabel">Sex *</label>
+            <select id="sex">
+              <option value="" data-i18n="welcome.sexPlaceholder">Select your sex</option>
+              <option value="male" data-i18n="welcome.sexMale">Male</option>
+              <option value="female" data-i18n="welcome.sexFemale">Female</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="country" data-i18n="welcome.countryLabel">Country of birth *</label>
+            <select id="country">
+              <option value="" data-i18n="welcome.countryPlaceholder">Select your country</option>
+              <!-- Liste simplifiée pour l’instant (on pourra la remplacer par la liste complète plus tard) -->
+              <option value="FR">France</option>
+              <option value="TH">Thailand</option>
+              <option value="US">United States</option>
+              <option value="ES">Spain</option>
+              <option value="DE">Germany</option>
+              <option value="BR">Brazil</option>
+              <option value="CN">China</option>
+              <option value="RU">Russia</option>
+              <option value="IN">India</option>
+              <option value="GB">United Kingdom</option>
+              <option value="CA">Canada</option>
+              <option value="AU">Australia</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="calcMode" data-i18n="welcome.calcLabel">Life calculation method</label>
+            <select id="calcMode">
+              <option value="30000_days" data-i18n="welcome.calc30000">
+                30,000 days (default)
+              </option>
+              <option value="by_demographics" data-i18n="welcome.calcReal">
+                Real (based on my profile)
+              </option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <span data-i18n="welcome.startButton">Start my journey</span>
+          </button>
+
+          <p id="resultMessage" class="result-message"></p>
+        </form>
+      </div>
+    </main>
+
+    <!-- Pas de bottom nav sur welcome -->
+    <footer id="bottomNav"></footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/lang.js"></script>
+
+  <script>
+    // Quand tout est prêt, on applique les traductions
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.DaylifeI18n) {
+        DaylifeI18n.applyTranslations();
+      }
+
+      const form = document.getElementById("welcomeForm");
+      const resultEl = document.getElementById("resultMessage");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const lang = DaylifeI18n.getLang() || DaylifeI18n.detectLang();
+        const t = (key) => DaylifeI18n.t(key);
+
+        const dob = document.getElementById("dob").value;
+        const sex = document.getElementById("sex").value;
+        const country = document.getElementById("country").value;
+        const calcMode = document.getElementById("calcMode").value;
+
+        if (!dob || !sex || !country) {
+          resultEl.textContent = t("welcome.errorIncomplete");
+          resultEl.className = "result-message error";
+          return;
+        }
+
+        const profile = { dob, sex, country, calcMode, lang };
+        localStorage.setItem("daylifeProfile", JSON.stringify(profile));
+
+        resultEl.textContent = t("welcome.successSaved");
+        resultEl.className = "result-message success";
+
+        // Petite pause pour afficher le message, puis redirection vers home
+        setTimeout(() => {
+          window.location.href = "home.html";
+        }, 800);
+      });
+    });
+  </script>
+</body>
+</html>
