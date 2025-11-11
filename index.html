@@ -1,28 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>DAYLIFE – Every Day Counts</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Cache-Control" content="no-store" />
-</head>
-<body>
-  <script>
-    // On regarde si le profil DAYLIFE existe déjà
-    const profile = localStorage.getItem("daylifeProfile");
-
-    if (profile) {
-      // L'utilisateur a déjà rempli ses infos → on va vers la home
-      window.location.href = "home.html";
-    } else {
-      // Première fois → on va vers la page de bienvenue
-      window.location.href = "welcome.html";
-    }
-  </script>
-
-  <!-- Fallback simple au cas où JS est désactivé -->
-  <noscript>
-    <p>DAYLIFE nécessite JavaScript. Please enable JavaScript.</p>
-  </noscript>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DAYLIFE – Every Day Counts</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
