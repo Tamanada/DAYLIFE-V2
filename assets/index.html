@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DAYLIFE – Redirect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="refresh" content="0; url=welcome.html" />
+  <script>
+    // Redirection plus intelligente quand JS est dispo
+    (function () {
+      try {
+        const profile = localStorage.getItem("daylifeProfile");
+        if (profile) {
+          window.location.replace("home.html");
+        } else {
+          window.location.replace("welcome.html");
+        }
+      } catch (e) {
+        window.location.replace("welcome.html");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <p>Redirecting to DAYLIFE...</p>
+</body>
+</html>
